@@ -1,0 +1,211 @@
+body {
+    background-color: #1b1b1b; /* Темный фон для тела */
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Шапка с кнопками */
+.header {
+    display: flex;
+    justify-content: center; /* Центрируем по горизонтали */
+    align-items: center; /* Центрируем по вертикали */
+    background-color: #333; /* Темный фон для шапки */
+    height: 80px; /* Высота шапки */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Легкая тень для шапки */
+    padding: 0 20px;
+    gap: 20px;
+}
+
+.btn {
+    outline: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #40B3A2;
+    min-width: 200px;
+    border: 0;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
+    box-sizing: border-box;
+    padding: 16px 20px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.btn:hover {
+    opacity: .95;
+}
+
+.btn .animation {
+    border-radius: 100%;
+    animation: ripple 0.6s linear infinite;
+}
+
+@keyframes ripple {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.1), 0 0 0 20px rgba(255, 255, 255, 0.1), 0 0 0 40px rgba(255, 255, 255, 0.1), 0 0 0 60px rgba(255, 255, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 0 20px rgba(255, 255, 255, 0.1), 0 0 0 40px rgba(255, 255, 255, 0.1), 0 0 0 60px rgba(255, 255, 255, 0.1), 0 0 0 80px rgba(255, 255, 255, 0);
+    }
+}
+
+/* Стили для вкладок */
+.tab-content {
+    margin: 20px;
+    padding: 20px;
+    background-color: #2d2d2d;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Скрываем все вкладки по умолчанию */
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+h2 {
+    color: #ffffff;
+    horiz-align: center;
+    text-align: center;
+    font-size: xx-large;
+}
+
+h3 {
+    color: #ffffff;
+    horiz-align: center;
+    text-align: center;
+    font-size: x-large;
+}
+
+h4
+{
+    color: #ffffff;
+    horiz-align: center;
+    text-align: left;
+    font-size: x-large;
+    margin-left: 100px;
+}
+h5
+{
+    color: #ffffff;
+    horiz-align: center;
+    text-align: left;
+    font-size: large;
+    margin-left: 150px;
+}
+
+h6
+{
+    color: #ffffff;
+    horiz-align: center;
+    text-align: left;
+    font-size: large;
+    margin-left: 200px;
+}
+
+p {
+    color: #ffffff;
+    horiz-align: center;
+    text-align: center;
+
+    font-size: large;
+}
+
+.image-container {
+    text-align: center;
+    horiz-align: center;
+    vertical-align: center; /* Центрируем контент (картинку и текст) */
+    margin: 20px 0; /* Добавляем отступы сверху и снизу */
+}
+
+/* Стиль для самой картинки */
+.image-container img {
+    max-width: 100%; /* Сделаем изображение адаптивным */
+    height: auto; /* Сохраняем пропорции изображения */
+    display: block; /* Убираем лишние отступы вокруг картинки */
+    margin: 0 auto; /* Центрируем картинку по горизонтали */
+}
+
+.pimg
+{
+    text-align: center;
+    font-size: large;
+    color: #ffffff;
+}
+
+hr
+{
+    margin: 20px 0;
+    vertical-align: center;
+}
+
+
+button {
+    background: transparent;
+    position: relative;
+    padding: 5px 15px;
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid rgb(64, 179, 162);
+    border-radius: 25px;
+    outline: none;
+    overflow: hidden;
+    color: rgb(64, 179, 162);
+    transition: color 0.3s 0.1s ease-out;
+    text-align: center;
+}
+
+button span {
+    margin: 10px;
+}
+
+button::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    content: "";
+    border-radius: 50%;
+    display: block;
+    width: 20em;
+    height: 20em;
+    left: -5em;
+    text-align: center;
+    transition: box-shadow 0.5s ease-out;
+    z-index: -1;
+}
+
+button:hover {
+    color: #fff;
+    border: 1px solid rgb(64, 179, 162);
+}
+
+button:hover::before {
+    box-shadow: inset 0 0 0 10em rgb(64, 179, 162);
+}
+
+.centergit {
+    display: flex;
+    flex-direction: column; /* Если элементы должны располагаться вертикально */
+    align-items: center; /* Горизонтальное центрирование */
+    justify-content: center; /* Вертикальное центрирование */
+    text-align: center;
+    height: 5vh; /* Занимает всю высоту экрана для центрирования по вертикали */
+}
