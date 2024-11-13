@@ -1,0 +1,123 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+public class Checkers extends JFrame {
+    private static final int BOARD_SIZE = 8;
+    private final JPanel boardPanel;
+    private final JButton[][] boardButtons;
+    private boolean isRedTurn = true;
+    private JButton selectedButton = null;
+
+    public Checkers() {
+        setTitle("Шашки");
+        setSize(600, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        boardPanel = new JPanel(new GridLayout(BOARD_SIZE, BOARD_SIZE));
+        boardButtons = new JButton[BOARD_SIZE][BOARD_SIZE];
+
+        initializeBoard();
+
+        add(boardPanel);
+    }
+    private void initializeBoard() {
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                boardButtons[row][col] = new JButton();
+                boardButtons[row][col].setFocusPainted(false);
+                boardButtons[row][col].setPreferredSize(new Dimension(70, 70));
+                boardButtons[row][col].setBackground((row + col) % 2 == 0 ? Color.WHITE : Color.DARK_GRAY);
+                boardButtons[row][col].addActionListener(new ButtonClickListener(row, col));
+                if ((row + col) % 2 != 0) {
+                    if (row < 3) {
+                        boardButtons[row][col].setText("R");
+                        boardButtons[row][col].setForeground(Color.RED);
+                    } else if (row > 4) {
+                        boardButtons[row][col].setText("B");
+                        boardButtons[row][col].setForeground(Color.BLACK);
+                    }
+                }
+
+                boardPanel.add(boardButtons[row][col]);
+            }
+        }
+    }
+    private class ButtonClickListener implements ActionListener {
+        private final int row;
+        private final int col;
+        public ButtonClickListener(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton clickedButton = boardButtons[row][col];
+            String currentPiece = clickedButton.getText();
+            if (selectedButton == null && !currentPiece.isEmpty() && ((currentPiece.equals("R") && isRedTurn) || (currentPiece.equals("B") && !isRedTurn))) {
+                selectedButton = clickedButton;
+                clickedButton.setBackground(Color.LIGHT_GRAY);
+                JOptionPane.showMessageDialog(null, "Вы выбрали шашку! Теперь выберите клетку для перемещения.");
+            } else if (selectedButton != null && currentPiece.equals("") && isValidMove(selectedButton, clickedButton)) {
+                clickedButton.setText(selectedButton.getText());
+                clickedButton.setForeground(selectedButton.getForeground());
+                selectedButton.setText("");
+                System.out.println("Selected button: " + selectedButton.getText() + ", Row: " + row + ", Col: " + col);
+                if (Math.abs(row - selectedButton.getY()) == 2 && Math.abs(col - selectedButton.getX()) == 2) {
+                    int capturedRow = (row + selectedButton.getY()) / 2;
+                    int capturedCol = (col + selectedButton.getX()) / 2;
+                    boardButtons[capturedRow][capturedCol].setText("");
+                }
+                if (selectedButton.getText().equals("R") && selectedButton.getForeground().equals(Color.RED) && row == 0) {
+                    clickedButton.setText("D");
+                    clickedButton.setForeground(Color.RED);
+                    clickedButton.repaint();
+                    System.out.println("Красная шашка на позиции (" + row + ", " + col + ") превращается в дамку.");
+                } else if (selectedButton.getText().equals("B") && selectedButton.getForeground().equals(Color.BLACK) && row == BOARD_SIZE - 1) {
+                    clickedButton.setText("D");
+                    clickedButton.setForeground(Color.BLACK);
+                    clickedButton.repaint();
+                    System.out.println("Черная шашка на позиции (" + row + ", " + col + ") превращается в дамку.");
+                }
+                isRedTurn = !isRedTurn;
+                selectedButton.setBackground((this.row + this.col) % 2 == 0 ? Color.WHITE : Color.DARK_GRAY);
+                selectedButton = null;
+            } else {
+                JOptionPane.showMessageDialog(null, "Неверный ход!");
+            }
+        }
+    }
+    private boolean isValidMove(JButton from, JButton to) {
+        int fromRow = -1, fromCol = -1, toRow = -1, toCol = -1;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (from == boardButtons[i][j]) {
+                    fromRow = i;
+                    fromCol = j;
+                }
+                if (to == boardButtons[i][j]) {
+                    toRow = i;
+                    toCol = j;
+                }
+            }
+        }
+        if (to.getText().equals("") && Math.abs(fromRow - toRow) == 1 && Math.abs(fromCol - toCol) == 1) {
+            return true;
+        }
+        if (to.getText().equals("") && Math.abs(fromRow - toRow) == 2 && Math.abs(fromCol - toCol) == 2) {
+            int midRow = (fromRow + toRow) / 2;
+            int midCol = (fromCol + toCol) / 2;
+            String middlePiece = boardButtons[midRow][midCol].getText();
+            if ((isRedTurn && middlePiece.equals("B")) || (!isRedTurn && middlePiece.equals("R"))) {
+                boardButtons[midRow][midCol].setText("");
+                return true;
+            }
+        }
+        return false;
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            new Checkers().setVisible(true);
+        });
+    }
+}
