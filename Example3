@@ -1,0 +1,76 @@
+class Skvorechnik {
+    private String material;
+    private String location;
+    public Skvorechnik(String material, String location) {
+        this.material = material;
+        this.location = location;
+    }
+    public String getMaterial() {
+        return material;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String newLocation) {
+        this.location = newLocation;
+        System.out.println("Скворечник перемещен в новое место: " + newLocation);
+    }
+}
+class Struna {
+    private String material;
+    private int tension;
+    public Struna(String material, int tension) {
+        this.material = material;
+        this.tension = tension;
+    }
+    public void setTension(int newTension) {
+        this.tension = newTension;
+        System.out.println("Струна настроена на натяжение: " + newTension);
+    }
+    public String getMaterial() {
+        return material;
+    }
+    public int getTension() {
+        return tension;
+    }
+}
+class Gitara {
+    private Struna[] struny = new Struna[6]; 
+    private Skvorechnik skvorechnik; 
+    public Gitara(Skvorechnik skvorechnik) {
+        for (int i = 0; i < struny.length; i++) {
+            struny[i] = new Struna("Нейлон", 10);
+        }
+        this.skvorechnik = skvorechnik; 
+    }
+    public void igrat() {
+        System.out.println("Вы играете на гитаре со скворечником, звук уникален!");
+    }
+    public void nastroivat(int newTension) {
+        System.out.println("Настраиваем гитару...");
+        for (Struna struna : struny) {
+            struna.setTension(newTension);
+        }
+    }
+    public void zamenitStrunu(int stringNumber, String material, int tension) {
+        if (stringNumber > 0 && stringNumber <= struny.length) {
+            struny[stringNumber - 1] = new Struna(material, tension);
+            System.out.println("Струна " + stringNumber + " заменена на новую: " + material + ", натяжение: " + tension);
+        } else {
+            System.out.println("Неверный номер струны!");
+        }
+    }
+    public void peremestitSkvorechnik(String newLocation) {
+        skvorechnik.setLocation(newLocation);
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Skvorechnik skvorechnik = new Skvorechnik("Дерево", "Верхняя дека");
+        Gitara gitara = new Gitara(skvorechnik);
+        gitara.igrat();
+        gitara.nastroivat(12);
+        gitara.zamenitStrunu(1, "Сталь", 15);
+        gitara.peremestitSkvorechnik("Нижняя дека");
+    }
+}
