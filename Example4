@@ -1,0 +1,43 @@
+import java.util.ArrayList;
+import java.util.List;
+public class Department {
+    private List<Position> positions = new ArrayList<>();
+    public void addPosition(String positionName) {
+        positions.add(new Position(positionName));
+    }
+    public List<Position> getPositions() {
+        return positions;
+    }
+    public class Position {
+        private String positionName;
+        private List<String> employees;
+        public Position(String positionName) {
+            this.positionName = positionName;
+            this.employees = new ArrayList<>();
+        }
+        public void addEmployee(String employeeName) {
+            employees.add(employeeName);
+        }
+        public List<String> getEmployees() {
+            return employees;
+        }
+        public String getPositionName() {
+            return positionName;
+        }
+    }
+    public static void main(String[] args) {
+        Department department = new Department();
+        department.addPosition("Manager");
+        department.addPosition("Developer");
+        Department.Position manager = department.getPositions().get(0);
+        manager.addEmployee("John Doe");
+        manager.addEmployee("Jane Smith");
+        Department.Position developer = department.getPositions().get(1);
+        developer.addEmployee("Alice Brown");
+        developer.addEmployee("Bob Johnson");
+        for (Department.Position position : department.getPositions()) {
+            System.out.println("Position: " + position.getPositionName());
+            System.out.println("Employees: " + position.getEmployees());
+        }
+    }
+}
