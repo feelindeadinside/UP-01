@@ -1,0 +1,25 @@
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+public class ExtractNumbers {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите текст:");
+        String text = scanner.nextLine();
+        String result = extractNumbers(text);
+        System.out.println(result);
+        scanner.close();
+    }
+    public static String extractNumbers(String text) {
+        StringBuilder numbers = new StringBuilder();
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            if (numbers.length() > 0) {
+                numbers.append(" ");
+            }
+            numbers.append(matcher.group());
+        }
+        return numbers.toString();
+    }
+}
