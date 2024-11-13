@@ -1,0 +1,79 @@
+(2 вариант)
+section .data
+    N db 8           ; Исходное значение N (100)
+    msg db "Результат: ", 0    ; Сообщение для вывода
+    len equ $ - msg        ; Длина сообщения
+    buffer db '0', 0       ; Буфер для преобразованного числа
+section .text
+    global _start
+_start:
+    mov al, [N]          ; Загружаем значение N в регистр AL
+    shr al, 1           ; Делим N на 2 (сдвиг вправо на 1 бит)
+    mov [N], al       ; Сохраняем результат обратно в N
+    movzx eax, byte [N]        ; Загружаем значение N
+    add eax, '0'       ; Преобразуем в ASCII
+    mov [buffer], al    ; Сохраняем результирующий символ в буфер
+    mov eax, 4      ; Системный вызов для записи
+    mov ebx, 1    ; Записываем в stdout
+    mov ecx, msg       ; Указатель на сообщение
+    mov edx, len     ; Длина сообщения
+    int 0x80    ; Выполняем системный вызов
+    mov eax, 4    ; Системный вызов для записи
+    mov ebx, 1       ; Записываем в stdout
+    mov ecx, buffer       ; Указатель на буфер с символом
+    mov edx, 1    ; Длина выводимого символа
+    int 0x80      ; Выполняем системный вызов
+    mov eax, 1    ; Системный вызов для выхода
+    xor ebx, ebx   ; Код завершения 0
+    int 0x80
+(2 вариант)
+section .data
+msg db "Результат: ", 0; Сообщение для вывода
+len equ $ - msg; Длина сообщения
+buffer db '00', 0; Буфер для результата
+section .text
+global _start
+_start:
+mov eax, 15; Пример значения x
+mov ebx, 8; Пример значения a
+sub eax, ebx; eax = x - a
+call int_to_string; Преобразуем число в строку
+mov eax, 4; Системный вызов для записи
+mov ebx, 1
+mov ecx, msg; Указатель на сообщение
+mov edx, len; Длина сообщения
+int 0x80; Выполняем системный вызов
+mov eax, 4; Системный вызов для записи
+mov ebx, 1
+mov ecx, buffer; Указатель на буфер с результатом
+mov edx, 2; Длина выводимого результата
+int 0x80; Выполняем системный вызов
+mov eax, 1; Системный вызов для выхода
+xor ebx, ebx; Код завершения 0
+int 0x80; Выполняем системный вызову
+int_to_string:
+xor edx, edx; Обнуляем edx
+.convert:
+xor ebx, ebx; Очищаем ebx
+mov ebx, 10; Основание для деления
+div ebx; Делим eax на 10
+add dl, '0'; Преобразуем остаток в символ
+mov [buffer + edx], dl; Сохраняем символ в буфере
+inc edx; Увеличиваем счетчик
+test eax, eax; Последняя проверка
+jnz .convert; Если eax не 0, продолжаем
+mov edi, 0; Указатель на начало буфера
+dec edx; 
+.reverse:
+cmp edi, edx; Сравниваем указатели
+jge .done; Если достигли конца, завершаем
+mov al, [buffer + edi]; Загружаем символ из начала
+mov bl, [buffer + edx]; Загружаем символ из конца
+mov [buffer + edi], bl; Меняем местами
+mov [buffer + edx], al; Меняем местами
+inc edi; Перемещаем указатель вперед
+dec edx; Перемещаем указатель назад
+jmp .reverse; Продолжаем реверс
+.done:
+mov byte [buffer + edx + 1], 0 
+ret
