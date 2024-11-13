@@ -1,0 +1,121 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+public class DocumentFillerGUI {
+    private JFrame frame;
+    private JTextField firstNameField;
+    private JTextField lastNameField;
+    private JTextField jobTitleField;
+    private JTextField addressField;
+    private JTextArea documentArea;
+    private JButton generateButton;
+    private JComboBox<String> formComboBox;
+    public DocumentFillerGUI() {
+        frame = new JFrame("Заполнение документа");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(600, 400);
+        frame.setLayout(new BorderLayout());
+        JPanel inputPanel = new JPanel();
+        inputPanel.setLayout(new GridLayout(6, 2));
+        inputPanel.add(new JLabel("Имя:"));
+        firstNameField = new JTextField();
+        inputPanel.add(firstNameField);
+        inputPanel.add(new JLabel("Фамилия:"));
+        lastNameField = new JTextField();
+        inputPanel.add(lastNameField);
+        inputPanel.add(new JLabel("Должность:"));
+        jobTitleField = new JTextField();
+        inputPanel.add(jobTitleField);
+        inputPanel.add(new JLabel("Адрес:"));
+        addressField = new JTextField();
+        inputPanel.add(addressField);
+        inputPanel.add(new JLabel("Форма обращения:"));
+        formComboBox = new JComboBox<>(new String[]{"Вы", "Ты"});
+        inputPanel.add(formComboBox);
+        frame.add(inputPanel, BorderLayout.NORTH);
+        documentArea = new JTextArea();
+        documentArea.setEditable(false);
+        JScrollPane scrollPane = new JScrollPane(documentArea);
+        frame.add(scrollPane, BorderLayout.CENTER);
+        generateButton = new JButton("Генерировать документ");
+        generateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String firstName = firstNameField.getText();
+                String lastName = lastNameField.getText();
+                String jobTitle = jobTitleField.getText();
+                String address = addressField.getText();
+                String form = (String) formComboBox.getSelectedItem();
+                Person person = new Person(firstName, lastName, jobTitle, address, form);
+                String documentContent = generateLetter(person);
+                documentArea.setText(documentContent);
+            }
+        });
+        frame.add(generateButton, BorderLayout.SOUTH);
+
+        frame.setVisible(true);
+    }
+    private String generateLetter(Person person) {
+        String template = "Уважаемый(ая) {firstName} {lastName},\n\n" +
+                "Поздравляем вас с новой должностью {jobTitle}. Мы рады сообщить вам, что ваша работа будет проводиться в городе {address}.\n\n" +
+                "С уважением,\nКомпания";
+        String firstName = person.getFirstName();
+        String lastName = person.getLastName();
+        if (person.getForm().equals("Ты")) {
+            firstName = declensionInGenitive(firstName);
+            lastName = declensionInGenitive(lastName);
+        }
+        template = template.replace("{firstName}", firstName);
+        template = template.replace("{lastName}", lastName);
+        template = template.replace("{jobTitle}", person.getJobTitle());
+        template = template.replace("{address}", person.getAddress());
+        return template;
+    }
+    private String declensionInGenitive(String name) {
+        if (name.endsWith("й") || name.endsWith("н")) {
+            return name + "а"; 
+        }
+        return name;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new DocumentFillerGUI();
+            }
+        });
+    }
+}
+
+class Person {
+    private String firstName;
+    private String lastName;
+    private String jobTitle;
+    private String address;
+    private String form; 
+
+    public Person(String firstName, String lastName, String jobTitle, String address, String form) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.jobTitle = jobTitle;
+        this.address = address;
+        this.form = form;
+    }
+    public String getFirstName() {
+        return firstName;
+    }
+    public String getLastName() {
+        return lastName;
+    }
+    public String getJobTitle() {
+        return jobTitle;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public String getForm() {
+        return form;
+    }
+}
