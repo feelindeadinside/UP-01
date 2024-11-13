@@ -1,0 +1,133 @@
+import java.util.ArrayList;
+import java.util.List;
+public class Main {
+    public static void main(String[] args) {
+        Line line1 = new Line(new Rational(1, 1), new Rational(-1, 1), new Rational(-2, 1));
+        Line line2 = new Line(new Rational(2, 1), new Rational(-2, 1), new Rational(-4, 1));
+        Line line3 = new Line(new Rational(1, 1), new Rational(1, 1), new Rational(-1, 1));
+        System.out.println("Line1 intersects X-Axis at: " + arrayToString(line1.intersectXAxis()));
+        System.out.println("Line1 intersects Y-Axis at: " + arrayToString(line1.intersectYAxis()));
+        Rational[] intersection = line1.intersect(line3);
+        if (intersection != null) {
+            System.out.println("Intersection of Line1 and Line3: " + arrayToString(intersection));
+        } else {
+            System.out.println("Line1 and Line3 are parallel or coincident.");
+        }
+        List<Line> lines = new ArrayList<>();
+        lines.add(line1);
+        lines.add(line2);
+        lines.add(line3);
+        System.out.println("Parallel lines groups:");
+        findParallelGroups(lines);
+    }
+    public static void findParallelGroups(List<Line> lines) {
+        for (int i = 0; i < lines.size(); i++) {
+            List<Line> parallelGroup = new ArrayList<>();
+            parallelGroup.add(lines.get(i));
+            for (int j = i + 1; j < lines.size(); j++) {
+                if (lines.get(i).isParallel(lines.get(j))) {
+                    parallelGroup.add(lines.get(j));
+                }
+            }
+            if (parallelGroup.size() > 1) {
+                System.out.println("Group " + (i + 1) + ":");
+                for (Line line : parallelGroup) {
+                    System.out.println(line);
+                }
+            }
+        }
+    }
+    public static String arrayToString(Rational[] array) {
+        if (array == null) return "None";
+        return "(" + array[0] + ", " + array[1] + ")";
+    }
+}
+class Line {
+    private Rational a;
+    private Rational b;
+    private Rational c;
+    public Line(Rational a, Rational b, Rational c) {
+        this.a = a;
+        this.b = b;
+        this.c = c;
+    }
+    public Rational[] intersectXAxis() {
+        if (b.equals(new Rational(0, 1))) {
+            return null;
+        }
+        Rational x = c.multiply(new Rational(-1, 1)).divide(a);
+        return new Rational[]{x, new Rational(0, 1)};
+    }
+    public Rational[] intersectYAxis() {
+        if (a.equals(new Rational(0, 1))) {
+            return null;
+        }
+        Rational y = c.multiply(new Rational(-1, 1)).divide(b);
+        return new Rational[]{new Rational(0, 1), y};
+    }
+    public Rational[] intersect(Line other) {
+        Rational determinant = this.a.multiply(other.b).subtract(this.b.multiply(other.a));
+        if (determinant.equals(new Rational(0, 1))) {
+            return null;
+        }
+        Rational x = (this.b.multiply(other.c).subtract(this.c.multiply(other.b))).divide(determinant);
+        Rational y = (this.c.multiply(other.a).subtract(this.a.multiply(other.c))).divide(determinant);
+        return new Rational[]{x, y};
+    }
+    public boolean isParallel(Line other) {
+        return this.a.multiply(other.b).equals(this.b.multiply(other.a));
+    }
+    @Override
+    public String toString() {
+        return a + "x + " + b + "y + " + c + " = 0";
+    }
+}
+class Rational {
+    private int numerator;
+    private int denominator;
+    public Rational(int numerator, int denominator) {
+        if (denominator == 0) {
+            throw new ArithmeticException("Denominator cannot be zero");
+        }
+        int gcd = gcd(numerator, denominator);
+        this.numerator = numerator / gcd;
+        this.denominator = denominator / gcd;
+        if (this.denominator < 0) {
+            this.numerator = -this.numerator;
+            this.denominator = -this.denominator;
+        }
+    }
+    private int gcd(int a, int b) {
+        if (b == 0) {
+            return Math.abs(a);
+        }
+        return gcd(b, a % b);
+    }
+    public Rational add(Rational other) {
+        int num = this.numerator * other.denominator + other.numerator * this.denominator;
+        int denom = this.denominator * other.denominator;
+        return new Rational(num, denom);
+    }
+    public Rational subtract(Rational other) {
+        int num = this.numerator * other.denominator - other.numerator * this.denominator;
+        int denom = this.denominator * other.denominator;
+        return new Rational(num, denom);
+    }
+    public Rational multiply(Rational other) {
+        return new Rational(this.numerator * other.numerator, this.denominator * other.denominator);
+    }
+    public Rational divide(Rational other) {
+        return new Rational(this.numerator * other.denominator, this.denominator * other.numerator);
+    }
+    public boolean equals(Rational other) {
+        return this.numerator == other.numerator && this.denominator == other.denominator;
+    }
+    @Override
+    public String toString() {
+        if (denominator == 1) {
+            return Integer.toString(numerator);
+        } else {
+            return numerator + "/" + denominator;
+        }
+    }
+}
