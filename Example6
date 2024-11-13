@@ -1,0 +1,116 @@
+class Skvorechnik {
+    private String material;
+    private String location;
+    public Skvorechnik(String material, String location) {
+        if (material == null || material.isEmpty()) {
+            throw new IllegalArgumentException("Материал скворечника не может быть пустым!");
+        }
+        if (location == null || location.isEmpty()) {
+            throw new IllegalArgumentException("Местоположение скворечника не может быть пустым!");
+        }
+        this.material = material;
+        this.location = location;
+    }
+    public String getMaterial() {
+        return material;
+    }
+    public String getLocation() {
+        return location;
+    }
+    public void setLocation(String newLocation) {
+        if (newLocation == null || newLocation.isEmpty()) {
+            throw new IllegalArgumentException("Невозможно переместить скворечник в пустое место!");
+        }
+        this.location = newLocation;
+        System.out.println("Скворечник перемещен в новое место: " + newLocation);
+    }
+}
+class Struna {
+    private String material;
+    private int tension;
+    public Struna(String material, int tension) {
+        if (material == null || material.isEmpty()) {
+            throw new IllegalArgumentException("Материал струны не может быть пустым!");
+        }
+        if (tension <= 0) {
+            throw new IllegalArgumentException("Натяжение струны должно быть положительным числом!");
+        }
+        this.material = material;
+        this.tension = tension;
+    }
+    public void setTension(int newTension) {
+        if (newTension <= 0) {
+            throw new IllegalArgumentException("Натяжение струны должно быть положительным числом!");
+        }
+        this.tension = newTension;
+        System.out.println("Струна настроена на натяжение: " + newTension);
+    }
+    public String getMaterial() {
+        return material;
+    }
+    public int getTension() {
+        return tension;
+    }
+}
+class Gitara {
+    private Struna[] struny = new Struna[6];
+    private Skvorechnik skvorechnik;
+    public Gitara(Skvorechnik skvorechnik) {
+        if (skvorechnik == null) {
+            throw new IllegalArgumentException("Необходимо передать скворечник при создании гитары!");
+        }
+        try {
+            for (int i = 0; i < struny.length; i++) {
+                struny[i] = new Struna("Нейлон", 10);
+            }
+        } catch (OutOfMemoryError e) {
+            System.out.println("Ошибка: недостаточно памяти для создания строк на гитаре.");
+            throw e; 
+        }
+        this.skvorechnik = skvorechnik;
+    }
+    public void igrat() {
+        System.out.println("Вы играете на гитаре со скворечником, звук уникален!");
+    }
+    public void nastroivat(int newTension) {
+        if (newTension <= 0) {
+            throw new IllegalArgumentException("Натяжение не может быть меньше или равно нулю!");
+        }
+        System.out.println("Настраиваем гитару...");
+        for (Struna struna : struny) {
+            struna.setTension(newTension);
+        }
+    }
+    public void zamenitStrunu(int stringNumber, String material, int tension) {
+        if (stringNumber < 1 || stringNumber > struny.length) {
+            throw new IllegalArgumentException("Неверный номер струны! Введите число от 1 до 6.");
+        }
+        try {
+            struny[stringNumber - 1] = new Struna(material, tension);
+            System.out.println("Струна " + stringNumber + " заменена на новую: " + material + ", натяжение: " + tension);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка при замене струны: " + e.getMessage());
+        }
+    }
+    public void peremestitSkvorechnik(String newLocation) {
+        try {
+            skvorechnik.setLocation(newLocation);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Ошибка при перемещении скворечника: " + e.getMessage());
+        }
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        try {
+            Skvorechnik skvorechnik = new Skvorechnik("Дерево", "Верхняя дека");
+            Gitara gitara = new Gitara(skvorechnik);
+            gitara.igrat();
+            gitara.nastroivat(12);
+            gitara.zamenitStrunu(1, "Сталь", 15);
+            gitara.peremestitSkvorechnik("Нижняя дека");
+        } catch (IllegalArgumentException | OutOfMemoryError e) {
+            System.out.println("Ошибка: " + e.getMessage());
+        }
+    }
+}
